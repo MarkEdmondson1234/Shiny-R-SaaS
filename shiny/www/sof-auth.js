@@ -1,5 +1,5 @@
 const config = {
-  apiKey: "AIzaSyDoZpMGg8EagXel14An2LuUoaT8RrcKbXA",
+  apiKey: "API KEY",
   authDomain: "sunholo-bootstrap-dev.firebaseapp.com",
   projectId: "sunholo-bootstrap-dev"
 }

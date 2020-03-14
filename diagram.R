@@ -21,11 +21,13 @@ mermaid("
     Payment App->>Firebase: stripeUserId
   else signed up
     Payment App->>Shiny App: Redirect back
+    Shiny App->>Firebase: Firebase Auth Login
+    Firebase->>Shiny App: Firebase UserId
   end
   alt Firebase UserId=existingCustomer
-    Shiny App->>Firebase: Firebase UserId
-    Firebase->>Shiny App: Existing stripeCustomerId
-    Firebase->>Shiny App: Existing stripeSubscriptionId
+    Shiny App->>Firebase: Get Stripe details
+    Firebase->>Shiny App: stripeCustomerId
+    Firebase->>Shiny App: stripeSubscriptionId
     Shiny App->>Customer Content: Deliver paid content
   end
 ")
