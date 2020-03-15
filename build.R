@@ -24,4 +24,4 @@ fb_document_get <- function(document_path,
 # to use
 fb_document_get("subscriptions")
 fb_document_get("users")
-fb_document_get("users/XXXX")
+#fb_document_get("users/XXXX")

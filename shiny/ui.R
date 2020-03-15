@@ -15,7 +15,7 @@ fluidPage(
   # load shinyjs on
   shinyjs::useShinyjs(),
 
-  h1("Sign in with Firebase"),
+  h1("R SaaS - Bootstrapping paid for Shiny applications with Firebase & Stripe"),
   div(id = "firebaseui-auth-container"),
   div(id="loader", "Loading..."),
 
@@ -35,12 +35,13 @@ fluidPage(
       12,
       div(
         style = "padding: 50px",
-        h1("You and now signed in via Firebase"),
+        h1("You are now signed in via Firebase"),
         br(),
         br(),
-        h3("This is all the information that comes with the signed in user on Firebase"),
+        h3("Some information that comes with the signed in user on Firebase"),
 
-        dataTableOutput("user_out"),
+        tableOutput("user_out"),
+        uiOutput("is_user"),
         uiOutput("subscriber")
       )
     )

@@ -5,10 +5,9 @@ function(input, output, session) {
   # switch between auth sign in/registration and app for signed in user
   observeEvent(session$userData$current_user(), {
     current_user <- session$userData$current_user()
-    message("blah")
     str(current_user)
 
-    if (is.null(current_user)) {
+    if(is.null(current_user)) {
       shinyjs::show("sign_in_panel")
       shinyjs::hide("main")
       shinyjs::hide("verify_email_view")
@@ -24,6 +23,8 @@ function(input, output, session) {
 
     }
 
+
+
   }, ignoreNULL = FALSE)
 
   # Signed in user --------------------
@@ -35,9 +36,10 @@ function(input, output, session) {
   # input$sof_auth_user comes from front end js in "www/sof-auth.js"
   observeEvent(input$sof_auth_user, {
 
-    message("sof_auth_user: ", input$sof_auth_user)
+    message("setting sof_auth_user")
     # set the signed in user
     session$userData$current_user(input$sof_auth_user)
+
 
   }, ignoreNULL = FALSE)
 
@@ -48,50 +50,75 @@ function(input, output, session) {
     req(session$userData$current_user())
 
     out <- session$userData$current_user()
-    out <- unlist(out)
+    output <- c("uid", "displayName","photoURL","email","emailVerified",
+                "isAnonymous","apiKey","appName","authDomain",
+                "lastLoginAt","createdAt")
 
-    data.frame(
-      name = names(out),
-      value = unname(out)
-    )
+    data.frame(key = output, value = unlist(out[output]), row.names = NULL)
 
   })
 
-  subscriber <- reactive({
+  user <- reactive({
     req(session$userData$current_user())
 
     user <- unlist(session$userData$current_user())
-    datastore <- fb_document_get(paste0("users/", user[["uid"]]))
 
-    datastore$fields$stripeCustomerId$stringValue
+    fb_document_get(paste0("users/", user[["uid"]]))
+    # set if activate subscription
 
+  })
+
+  subscriber_check <- reactive({
+    req(user())
+    strp_subscription_check(user()$fields$stripeCustomerId$stringValue)
   })
 
   output$subscriber <- renderUI({
 
-    if(!is.null(subscriber())){
-      return(paste("You are a subscriber - stripeCustomerId:", subscriber()))
+    subscriber_check <- subscriber_check()
+    if(!is.null(subscriber_check) && !subscriber_check()){
+      return(tagList(
+        p("...but you are not yet a subscriber to paid content
+          - would you like to be? ",
+          a(href = "https://sunholo-bootstrap-dev.web.app/account", "Buy Now!")
+          ))
+        )
     }
 
     tagList(
-      div("You are not a subscriber :( - would you like to?",
-          a(href = "https://sunholo-bootstrap-dev.web.app/account",
-            "Buy Now!"))
+      h3("You are a subscriber!"),
+      br(),
+      p("Here is your paid for content:"),
+      plotOutput("paid_content")
     )
-
 
   })
 
+  output$paid_content <- renderPlot({
 
-  output$user_out <- renderDataTable({
-    datatable(
-      signed_in_user_df(),
-      rownames = FALSE,
-      options = list(
-        dom = "tp",
-        scrollX = TRUE
-      )
+    plot(iris)
+
+  })
+
+  output$is_user <- renderUI({
+
+    if(!is.null(user())){
+      return(paste("You are a stripe customer - stripeCustomerId:",
+                   user()$fields$stripeCustomerId$stringValue))
+    }
+
+    tagList(
+      div("You are not a customer :( - would you like to be? ",
+          a(href = "https://sunholo-bootstrap-dev.web.app/account",
+            "Buy Now!"))
     )
+  })
+
+
+  output$user_out <- renderTable({
+      req(signed_in_user_df())
+      str(signed_in_user_df())
+      signed_in_user_df()
   })
 
 }
