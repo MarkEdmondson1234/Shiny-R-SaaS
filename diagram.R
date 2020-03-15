@@ -28,8 +28,7 @@ mermaid("
     Firebase->>Shiny App: stripeCustomerId
     Shiny App->>Stripe: stripeCustomerId
     Stripe->>Shiny App: Stripe subscription status
-  end
-  alt Subscription status=Not Active
+  else Subscription status=Not Active
     Shiny App->>Free content: Not a customer
   else Subscription status=Active
     Shiny App->>Paid Content: Deliver paid content
