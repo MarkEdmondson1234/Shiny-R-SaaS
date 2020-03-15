@@ -15,7 +15,7 @@ function(input, output, session) {
       shinyjs::hide("sign_in_panel")
       shinyjs::hide("register_panel")
 
-      if (current_user$emailVerified == TRUE) {
+      if(!is.null(current_user$uid)){
         shinyjs::show("main")
       } else {
         shinyjs::show("verify_email_view")
@@ -50,10 +50,13 @@ function(input, output, session) {
     req(session$userData$current_user())
 
     out <- session$userData$current_user()
-    output <- c("uid", "displayName","photoURL","email","emailVerified",
+    output <- c("uid","provider","displayName","photoURL","email","emailVerified",
                 "isAnonymous","apiKey","appName","authDomain",
                 "lastLoginAt","createdAt")
-
+    if(is.null(out$email)){
+      out$email <- "<none>"
+    }
+    out$provider <- out$providerData[[1]]$providerId
     data.frame(key = output, value = unlist(out[output]), row.names = NULL)
 
   })

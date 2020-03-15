@@ -15,7 +15,7 @@ fluidPage(
   # load shinyjs on
   shinyjs::useShinyjs(),
 
-  h1("R SaaS - Bootstrapping paid for Shiny applications with Firebase & Stripe"),
+  h1("R SaaS - Bootstrapping paid Shiny applications with Firebase & Stripe"),
   div(id = "firebaseui-auth-container"),
   div(id="loader", "Loading..."),
 

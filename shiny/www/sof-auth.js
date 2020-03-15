@@ -1,5 +1,5 @@
 const config = {
-  apiKey: "API KEY",
+  apiKey: "API",
   authDomain: "sunholo-bootstrap-dev.firebaseapp.com",
   projectId: "sunholo-bootstrap-dev"
 }
@@ -16,8 +16,8 @@ ui.start('#firebaseui-auth-container', {
       signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
     },
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    //firebase.auth.GithubAuthProvider.PROVIDER_ID
+    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    firebase.auth.GithubAuthProvider.PROVIDER_ID
   ],
   // Other config options...
 });
@@ -45,8 +45,8 @@ var uiConfig = {
     // Leave the lines as is for the providers you want to offer your users.
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     //firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    //firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    //firebase.auth.GithubAuthProvider.PROVIDER_ID,
+    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    firebase.auth.GithubAuthProvider.PROVIDER_ID,
     //firebase.auth.EmailAuthProvider.PROVIDER_ID,
     //firebase.auth.PhoneAuthProvider.PROVIDER_ID
   ],
