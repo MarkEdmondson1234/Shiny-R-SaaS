@@ -9,6 +9,7 @@ This project is derived from:
 * https://www.tychobra.com/posts/2019-01-03-firebasse-auth-wtih-shiny/
 * [getfirefly.org](http://getfirefly.org)
 * Firebase [AuthUI](https://firebaseopensource.com/projects/firebase/firebaseui-web/)
+* An early iteration inspired some of this package https://github.com/JohnCoene/firebase which it now uses fore firebase auth
 
 ## Payment strategy
 

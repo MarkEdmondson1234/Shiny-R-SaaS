@@ -1,5 +1,5 @@
 library(shiny)
-library(shinyjs)
+library(firebase)
 library(googleAuthR)
 
 gar_auth_configure(path = Sys.getenv("GAR_CLIENT_JSON"))
