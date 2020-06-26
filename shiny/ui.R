@@ -13,6 +13,7 @@ fluidPage(
       # will only display upon login
       uiOutput("user_out"),
       uiOutput("subscriber"),
+      p("See the app code ", a(href="https://github.com/MarkEdmondson1234/Shiny-R-SaaS", "on GitHub"))
     ),
     mainPanel(
 

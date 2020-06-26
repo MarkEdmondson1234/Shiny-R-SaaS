@@ -82,7 +82,7 @@ library(googleAuthR)
 gar_service_provision("firebase-reader", "roles/datastore.viewer")
 ```
 9. Run the Shiny app on `http://localhost:PORT` to test locally (`http://127.0.0.1:PORT` doesn't work with Firebase login) - I launch Shiny in Viewer pane then visit `http://localhost` in my browser
-10. Deploy the test Shiny app in `shiny/` with the client auth key in the same folder
+10. Deploy the test Shiny app in `shiny/` with the client auth key and `.Renviron` in the same folder
 
 
 ## Running the payment app
