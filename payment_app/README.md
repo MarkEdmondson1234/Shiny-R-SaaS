@@ -12,9 +12,13 @@ Each time a user subscribes via the JavaScript library, a webhook will be sent t
 
 ### Cloud Function
 
-The python code in `payment_app/fb_functions/` will create a webhook endpoint.  Create it in the same project as the Firebase authentication if used.
+The python3.7 code in `payment_app/fb_functions/` will create a webhook endpoint.  Create it in the same project as the Firebase authentication if used.
 
-You can copy-paste the code into Cloud Functions, which should then work for all webhooks from Paddle covering the events:
+See [here on how to deploy the code to Google Cloud Functions](https://cloud.google.com/functions/docs/concepts/python-runtime) - you can use `gcloud` or paste it straight into the web console.  The function to execute is `paddle`
+
+![](cloud-function-paddle.png)
+
+The HTTP endpoint will be given to you after deployed - use that within Paddle as the webhook.  It covers the Paddle events:
 
 ```python
     sub_events = ['subscription_created',
@@ -32,3 +36,22 @@ This is the format the R code uses to identify which Firebase user has which sub
 
 The code includes a verification step, which verifies the webhook is coming from Paddle.  To pass the step, you need to paste in your Public key as detailed in [verifying webhooks](https://developer.paddle.com/webhook-reference/verifying-webhooks) and is found in your seller dashboard.
  
+## Testing
+
+You can test the webhook here: https://vendors.paddle.com/webhook-alert-test
+
+The tests will need the `passthrough` field filled in with a uid json string as above.  The webhook triggers for subscription created, subscription updated and subscription cancelled webhooks.
+
+![](paddle-webhook-test.png)
+
+If working you should see the subscription data propagate to your Firebase console database at https://console.firebase.google.com/
+
+The example below is for the test webhook given above:
+
+![](firebase-database.png)
+
+This database is read from the Shiny app to check a user's subscription.
+
+There is also an `event` collection for each user which contains all historic updates (creation, updates, cancellations).  
+
+The Shiny app will check that the status is not "deleted" indicating a lapsed subscription.

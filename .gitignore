@@ -1,5 +1,5 @@
-
 .Renviron
 .Rproj.user
 .Rhistory
 shiny/firebase.rds
+firebase-reader-auth-key.json
