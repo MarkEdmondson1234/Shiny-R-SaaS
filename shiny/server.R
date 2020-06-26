@@ -23,28 +23,27 @@ function(input, output, session) {
     f$sign_out()
   })
 
-  ##### App for signed in user
-  signed_in_user_df <- reactive({
+
+  output$user_out <- renderUI({
     req(firebase_user())
 
-    out <- firebase_user()
-    output <- c("uid","provider","displayName","photoURL","email","emailVerified",
-                "isAnonymous","apiKey","appName","authDomain",
-                "lastLoginAt","createdAt")
-    if(is.null(out$email)){
-      out$email <- "<none>"
-    }
-    out$provider <- out$providerData[[1]]$providerId
-    data.frame(key = output,
-               value = unlist(out[output]),
-               row.names = NULL, stringsAsFactors = FALSE)
+    user <- firebase_user()
+    tagList(
+      div(class="card",
+          img(src = user$photoURL, style="width:100%"),
+          h2(paste("Welcome", user$displayName)),
 
-  })
+          p(class="email", user$email),
+          p(paste("Last login:",
+                       as.POSIXct(as.numeric(user$lastLoginAt)/1000,
+                                  origin = "1970-01-01"))),
+          p(paste("Created: ",
+                       as.POSIXct(as.numeric(user$createdAt)/1000,
+                                  origin = "1970-01-01"))),
+          p(actionButton("signout", "Sign out", class = "btn-danger")),
+          p()
+      ))
 
-
-  output$user_out <- renderTable({
-    req(signed_in_user_df())
-    signed_in_user_df()
   })
 
   # NULL if no subscription
@@ -67,22 +66,22 @@ function(input, output, session) {
     ss <- subscriber()
 
     tagList(
-      h3("Your subscription details"),
-      tags$ul(
-        tags$li("Status:", ss$fields$status$stringValue),
-        tags$li("Email:", ss$fields$email$stringValue),
-        tags$li("Last update: ", ss$fields$event_time$stringValue),
-        tags$li("Next bill date:", ss$fields$next_bill_date$stringValue)
-      ),
-      a(href=ss$fields$update_url$stringValue,
-        tags$button("Update your subscription",
-                           icon = icon("credit-card"),
-                           class = "btn-info")),
-      " ",
-      a(href=ss$fields$cancel_url$stringValue,
-        tags$button("Cancel your subscription",
-                    icon = icon("window-close"),
-                    class = "btn-danger"))
+      div(class="card",
+        h3("Subscription details"),
+        p("Status:", ss$fields$status$stringValue),
+        p(class="email", ss$fields$email$stringValue),
+        p("Last update: ", ss$fields$event_time$stringValue),
+        p("Next bill date:", ss$fields$next_bill_date$stringValue),
+        p(a(href=ss$fields$update_url$stringValue,
+          "Update your subscription",
+                             icon = icon("credit-card"),
+                             class = "btn-info")),
+        " ",
+        p(a(href=ss$fields$cancel_url$stringValue,
+          "Cancel your subscription",
+                      icon = icon("window-close"),
+                      class = "btn-danger"))
+        )
       )
 
   })
@@ -93,21 +92,19 @@ function(input, output, session) {
     subscriber <- subscriber()
     if(is.null(subscriber)){
       return(tagList(
-        p("...but you are not yet a subscriber to paid content
-          - would you like to be? ",
+        div(class="card",
+        p("To see paid content please subscribe:",
           pdle_subscribe(PADDLE_PRODUCT_ID,
                          user_id = firebase_user()$uid,
                          email = firebase_user()$email),
-          helpText("If you have subscribed already, make sure you have logged in with a method using the same email as your subscription")
+          helpText("If you have subscribed already, make sure you have logged in with a method using the same email as your subscription"),
+          helpText("Use coupon code 'test123' to get 100% discount")
 
-          ))
+          )))
         )
     }
 
-    tagList(
-      h3("You are a subscriber!"),
-      subscriber_details()
-    )
+    subscriber_details()
 
   })
 
