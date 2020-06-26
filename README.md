@@ -2,6 +2,14 @@
 
 Create a template for R users to create paid subscription services for Shiny Apps.
 
+## Demo
+
+An example is deployed to shinyapps.io here:
+
+https://mark.shinyapps.io/r-saas/
+
+Login with one of the providers (more are available), use the coupon code "test123" to test the paid subscription service of Paddle.  The paid content is a woeful plot.
+
 ## Many thanks to...
 
 This project is derived from:
@@ -9,6 +17,7 @@ This project is derived from:
 * https://www.tychobra.com/posts/2019-01-03-firebasse-auth-wtih-shiny/
 * Firebase [AuthUI](https://firebaseopensource.com/projects/firebase/firebaseui-web/)
 * An early iteration inspired some of this package https://github.com/JohnCoene/firebase which it now uses for firebase auth
+* Some guy on medium.com who did the cloud function in PHP but I can't find it now
 
 ## Screenshots
 

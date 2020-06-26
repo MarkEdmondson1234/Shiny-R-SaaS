@@ -28,6 +28,9 @@ fb_document_get <- function(document_path,
 
 
 usePaddle <- function(vendor_id = Sys.getenv("PADDLE_VENDOR")){
+  if(vendor_id == ""){
+    stop("Paddle vendor_id is not set - ENV var PADDLE_VENDOR missing?")
+  }
   singleton(
     tags$head(
       tags$script(src="https://cdn.paddle.com/paddle/paddle.js"),
