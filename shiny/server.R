@@ -1,5 +1,7 @@
 library(firebase)
 
+PADDLE_PRODUCT_ID <- 597736
+
 function(input, output, session) {
 
   # https://firebase.john-coene.com/articles/ui.html
@@ -16,6 +18,11 @@ function(input, output, session) {
     f$get_signed_in()$response
   })
 
+
+  observeEvent(input$signout, {
+    f$sign_out()
+  })
+
   ##### App for signed in user
   signed_in_user_df <- reactive({
     req(firebase_user())
@@ -28,74 +35,90 @@ function(input, output, session) {
       out$email <- "<none>"
     }
     out$provider <- out$providerData[[1]]$providerId
-    data.frame(key = output, value = unlist(out[output]), row.names = NULL)
+    data.frame(key = output,
+               value = unlist(out[output]),
+               row.names = NULL, stringsAsFactors = FALSE)
 
   })
 
-  user <- reactive({
+
+  output$user_out <- renderTable({
+    req(signed_in_user_df())
+    signed_in_user_df()
+  })
+
+  # NULL if no subscription
+  subscriber <- reactive({
     req(firebase_user())
 
-    fb_document_get(paste0("users/", firebase_user()$uid))
-    # set if activate subscription
+    o <- fb_document_get(paste0("subscriptions/", firebase_user()$uid))
+
+    if(!is.null(o) && o$fields$status$stringValue == "deleted"){
+      # has subscription entry but it is cancelled
+      return(NULL)
+    }
+
+    o
 
   })
 
-  subscriber_check <- reactive({
-    req(user())
-    strp_subscription_check(user()$fields$stripeCustomerId$stringValue)
+  subscriber_details <- reactive({
+    req(subscriber())
+    ss <- subscriber()
+
+    tagList(
+      h3("Your subscription details"),
+      tags$ul(
+        tags$li("Status:", ss$fields$status$stringValue),
+        tags$li("Email:", ss$fields$email$stringValue),
+        tags$li("Last update: ", ss$fields$event_time$stringValue),
+        tags$li("Next bill date:", ss$fields$next_bill_date$stringValue)
+      ),
+      a(href=ss$fields$update_url$stringValue,
+        tags$button("Update your subscription",
+                           icon = icon("credit-card"),
+                           class = "btn-info")),
+      " ",
+      a(href=ss$fields$cancel_url$stringValue,
+        tags$button("Cancel your subscription",
+                    icon = icon("window-close"),
+                    class = "btn-danger"))
+      )
+
   })
 
   output$subscriber <- renderUI({
     req(firebase_user())
 
-    subscriber_check <- subscriber_check()
-    if(!is.null(subscriber_check) && !subscriber_check()){
+    subscriber <- subscriber()
+    if(is.null(subscriber)){
       return(tagList(
         p("...but you are not yet a subscriber to paid content
           - would you like to be? ",
-          a(href = "https://sunholo-bootstrap-dev.web.app/account", "Buy Now!")
+          pdle_subscribe(PADDLE_PRODUCT_ID,
+                         user_id = firebase_user()$uid,
+                         email = firebase_user()$email),
+          helpText("If you have subscribed already, make sure you have logged in with a method using the same email as your subscription")
+
           ))
         )
     }
 
     tagList(
       h3("You are a subscriber!"),
-      br(),
-      p("Here is your paid for content:"),
-      plotOutput("paid_content")
+      subscriber_details()
     )
 
   })
 
   output$paid_content <- renderPlot({
+    req(subscriber())
 
     plot(iris)
 
   })
 
-  output$is_customer <- renderUI({
-
-    if(!is.null(user())){
-      return(paste("You are a stripe customer - stripeCustomerId:",
-                   user()$fields$stripeCustomerId$stringValue))
-    }
-
-    tagList(
-      div("You are not a customer :( - would you like to be? ",
-          a(href = "https://sunholo-bootstrap-dev.web.app/account",
-            "Buy Now!"))
-    )
-  })
 
 
-  output$user_out <- renderTable({
-    f$req_sign_in() # require sign in
-    str(signed_in_user_df())
-    signed_in_user_df()
-  })
-
-  observeEvent(input$signout, {
-    f$sign_out()
-  })
 
 }

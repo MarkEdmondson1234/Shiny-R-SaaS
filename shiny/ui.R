@@ -1,19 +1,20 @@
 library(firebase)
-fluidPage(
+library(shiny)
 
+fluidPage(
+  usePaddle(),
   useFirebase(),
 
-  h1("R SaaS - Bootstrapping paid Shiny applications with Firebase & Stripe"),
+  h1("R SaaS - Bootstrapping paid Shiny applications with Firebase & Paddle"),
   useFirebaseUI(),
 
   reqSignin(actionButton("signout", "Sign out")),
 
   # will only display upon login
   tableOutput("user_out"),
-  uiOutput("is_user"),
   uiOutput("subscriber"),
 
-  uiOutput("msg"),
-  plotOutput("plot")
+  # will only display if paddle subscription active
+  plotOutput("paid_content")
 
 )

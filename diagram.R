@@ -5,32 +5,28 @@ mermaid("
   User->>Shiny App: Load app
   Shiny App->>Firebase: Firebase Auth Login
   Firebase->>Shiny App: Firebase UserId
-  alt Firebase UserId=New User
-    Shiny App->>Free content: Not a customer
-  end
-  alt User signs up as New Customer
-    Free content->>Payment App: payment link
-  else Payment signup
-    Payment App->>Firebase: Firebase Auth Login
-    Firebase->>Payment App: Firebase UserId
-    Payment App->>Stripe: Credit card details
-    Stripe->>Payment App: stripeCustomerId
-    Stripe->>Payment App: stripeSubscriptionId
-    Payment App->>Firebase: Firebase UserId
-    Payment App->>Firebase: stripeCustomerId
-  else Payment complete
-    Payment App->>Shiny App: Redirect back
-    Shiny App->>Firebase: Firebase Auth Login
-    Firebase->>Shiny App: Firebase UserId
-  end
-  alt Firebase UserId=existingCustomer
-    Shiny App->>Firebase: Get Stripe details
-    Firebase->>Shiny App: stripeCustomerId
-    Shiny App->>Stripe: stripeCustomerId
-    Stripe->>Shiny App: Stripe subscription status
-  else Subscription status=Not Active
-    Shiny App->>Free content: Not a customer
-  else Subscription status=Active
-    Shiny App->>Paid Content: Deliver paid content
-  end
-")
+  Shiny App->>Firebase subscriptions: check subscription database
+  Firebase subscriptions->>Shiny App: subscription status
+  alt No Subscription
+     Shiny App->>Paddle Button: JS library makes button
+     Paddle Button->>Paddle: User puts in credit card
+     Paddle->>Cloud Function: Webhook update
+     Cloud Function->>Firebase subscriptions: update with Firebase UserId
+     Shiny App->>User: Reload
+   else Active Subscription
+     Firebase subscriptions->>Shiny App: Sends subscription status
+     User->>Paid Content: User can use paid content
+     Shiny App->>Paddle Button: JS library makes cancel and update buttons
+   end
+   alt Monthly subscription payment fails
+     Paddle->>Cloud Function: Webhook update
+     Cloud Function->>Firebase subscriptions: update with Firebase UserId
+     Firebase subscriptions->>User: User loses access to paid content
+   else User Cancel
+     Shiny App->>Paddle Button: User cancels subscription
+     Paddle Button->>Paddle: Cancel
+     Paddle->>Cloud Function: Webhook update
+     Cloud Function->>Firebase subscriptions: update with Firebase UserId
+     Firebase subscriptions->>User: User loses access to paid content
+   end
+  ")

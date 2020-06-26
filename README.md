@@ -13,25 +13,32 @@ This project is derived from:
 
 ## Payment strategy
 
-![](sequence_diagram.png)
+![](paddle_flow.png)
 
 ## Steps to Run the Shiny App
 
 1. Download or clone this repository
-2. Create a [Firebase](https://firebase.google.com/) account, and in your new account create a project 
-3. In your new Firebase project enable the login providers you want (currently supporting Google, GitHub and Twitter)
+2. Create a [Firebase](https://firebase.google.com/) account and setup as per https://firebase.john-coene.com/articles/get-started.html
+3. Create a [Paddle](https://paddle.com) account and subscription as per https://developer.paddle.com/getting-started/intro
+4. Create env args:
 
-![](firebase-login.png)
+```
+FIREBASE_API_KEY=your-api-key
+FIREBASE_PROJECT=your-firebase-project
+GAR_CLIENT_JSON=file-location-of-client-id
+PADDLE_VENDOR=paddle-vendor-id
+```
 
-4. Click the "Web Setup" button (top right in above screenshot) and copy your project's "apiKey", "authDomain", and "projectId" into the object defined in line 1 of the file "www/sof-auth.js"
-5. Run the Shiny app
+5. When you create a Paddle subscription it gives you a productId - this should be unique for each Shiny app and is placed at the top of server.R in the `PADDLE_PRODUCT_ID` global arg.
+6. Deploy the Cloud Function in `payment_app/fb_functions` in the same Firebase project via the GCP console.  This handles communication between Firebase and Paddle webhooks.
 
-The functions in `global.R` take care of communicating with the Firebase database and Stripe, but do not handle payments which is passed off to the payment app.
+The functions in `global.R` take care of communicating with the Firebase database and Paddle
 
 ## Running the payment app
 
-The Shiny App will offer to link to the payment app via links in its free content after login.  The payment app is a React Firebase hosted app that takes care of payment details.  The user needs to log in to the apps with the same email/method and enter credit card details which are stored in Stripe and Firebase, accessed via the Shiny app to allow entry to paid content.
+The Shiny App will offer to link to the payment popup via Paddle after login with Firebase Auth.  The firebase auth ID is used to verify if the user has an existing subscription, and if not creates a payment button to do so.  If a user does have a subscription, then they see the paid content. 
 
-### How to deploy the payment app
+If a subscription fails (the credit card is cacnelled or similar) then Paddle updates.
 
-WIP - working demo here https://sunholo-bootstrap-dev.web.app/
+The Firebase databsae "subscriptions" is used to keep track of whether a user has paid or not.  The communication between Firebase and PAddle is done via the Python cloud function in the `payment_app/` folder - see its README for details.
+
