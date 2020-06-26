@@ -1,4 +1,4 @@
-# Creating a paid R SaaS with Firebase, Stripe and Shiny
+# Creating a paid R SaaS with Firebase, Paddle and Shiny
 
 Create a template for R users to create paid subscription services for Shiny Apps.
 
