@@ -39,5 +39,5 @@ The Shiny App will offer to link to the payment popup via Paddle after login wit
 
 If a subscription fails (the credit card is cacnelled or similar) then Paddle updates.
 
-The Firebase databsae "subscriptions" is used to keep track of whether a user has paid or not.  The communication between Firebase and PAddle is done via the Python cloud function in the `payment_app/` folder - see its README for details.
+The Firebase databsae "subscriptions" is used to keep track of whether a user has paid or not.  The communication between Firebase and PAddle is done via the Python cloud function in the `payment_app/` folder - see its [README for details](https://github.com/MarkEdmondson1234/Shiny-R-SaaS/tree/master/payment_app).
 
