@@ -1,4 +1,4 @@
-# Creating a paid R SaaS with Firebase, Stripe and Shiny
+# Creating a paid R SaaS with Firebase, Paddle and Shiny
 
 Create a template for R users to create paid subscription services for Shiny Apps.
 
@@ -7,9 +7,8 @@ Create a template for R users to create paid subscription services for Shiny App
 This project is derived from:
 
 * https://www.tychobra.com/posts/2019-01-03-firebasse-auth-wtih-shiny/
-* [getfirefly.org](http://getfirefly.org)
 * Firebase [AuthUI](https://firebaseopensource.com/projects/firebase/firebaseui-web/)
-* An early iteration inspired some of this package https://github.com/JohnCoene/firebase which it now uses fore firebase auth
+* An early iteration inspired some of this package https://github.com/JohnCoene/firebase which it now uses for firebase auth
 
 ## Screenshots
 
@@ -76,11 +75,13 @@ gar_service_provision("firebase-reader", "roles/datastore.viewer")
 9. Run the Shiny app on `http://localhost:PORT` to test locally (`http://127.0.0.1:PORT` doesn't work with Firebase login) - I launch Shiny in Viewer pane then visit `http://localhost` in my browser
 10. Deploy the test Shiny app in `shiny/` with the client auth key in the same folder
 
+
 ## Running the payment app
 
 The Shiny App will offer to link to the payment popup via Paddle after login with Firebase Auth.  The firebase auth ID is used to verify if the user has an existing subscription, and if not creates a payment button to do so.  If a user does have a subscription, then they see the paid content. 
 
 If a subscription fails (the credit card is cacnelled or similar) then Paddle updates.
 
-The Firebase databsae "subscriptions" is used to keep track of whether a user has paid or not.  The communication between Firebase and Paddle is done via the Python cloud function in the `payment_app/` folder - see its README for details.
+The Firebase databsae "subscriptions" is used to keep track of whether a user has paid or not.  The communication between Firebase and PAddle is done via the Python cloud function in the `payment_app/` folder - see its [README for details](https://github.com/MarkEdmondson1234/Shiny-R-SaaS/tree/master/payment_app).
+
 
