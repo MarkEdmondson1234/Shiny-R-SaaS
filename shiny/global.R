@@ -5,7 +5,7 @@ library(googleAuthR)
 gar_auth_configure(path = Sys.getenv("GAR_CLIENT_JSON"))
 
 token <- gar_auth(scopes = "https://www.googleapis.com/auth/cloud-platform",
-                  email = "m@sunholo.com")
+                  email = "your@email.com")
 
 #' Gets a Firebase data entry.  Will return NULL if it can not
 fb_document_get <- function(document_path,
