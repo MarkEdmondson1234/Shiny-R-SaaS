@@ -31,7 +31,7 @@ PADDLE_VENDOR=paddle-vendor-id
 5. When you create a Paddle subscription it gives you a productId - this should be unique for each Shiny app and is placed at the top of server.R in the `PADDLE_PRODUCT_ID` global arg.
 6. Deploy the Cloud Function in `payment_app/fb_functions` in the same Firebase project via the GCP console.  This handles communication between Firebase and Paddle webhooks.
 
-The functions in `global.R` take care of communicating with the Firebase database and Paddle
+The functions in `global.R` take care of Shiny communicating with the Firebase database and Paddle
 
 ## Running the payment app
 
