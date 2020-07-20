@@ -72,7 +72,7 @@ PADDLE_VENDOR=paddle-vendor-id
 ```
 
 6. When you create a Paddle subscription it gives you a productId - this should be unique for each Shiny app and is placed at the top of server.R in the `PADDLE_PRODUCT_ID` global arg.
-7. Deploy the Cloud Function in `payment_app/fb_functions` in the same Firebase project via the GCP console.  This handles communication between Firebase and Paddle webhooks.
+7. Deploy the Cloud Function in `payment_app/fb_functions` in the same Firebase project via the GCP console.  This handles communication between Firebase and Paddle webhooks.  You can do this via `gcloud functions deploy` if you have `gcloud` installed or copy-paste into the web UI for Cloud Functions.
 8. Create a firebase client auth key with "roles/datastore.viewer" role - with googleAuthR this can be done via:
 
 ```r
