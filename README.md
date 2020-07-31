@@ -83,6 +83,10 @@ gar_service_provision("firebase-reader", "roles/datastore.viewer")
 ```
 9. Run the Shiny app on `http://localhost:PORT` to test locally (`http://127.0.0.1:PORT` doesn't work with Firebase login) - I launch Shiny in Viewer pane then visit `http://localhost` in my browser
 10. Deploy the test Shiny app in `shiny/` with the client auth key and `.Renviron` in the same folder
+11. See the `global.R` for the payment functions that are used in the demo app, and you can adapt to your own use:
+  * `fb_document_get()` gets entries to the Firebase database, Firestore
+  * `usePaddle()` is placed at the top of pages you want to use Paddle in, and loads the Paddle JS library
+  * `pdle_subscribe()` creates a subscription button - you can select which product_id, user_id (the firebaseId is suggested), email to pre-populate in the form and the URL redirect that will be visited after payment
 
 
 ## Running the payment app
